@@ -18,45 +18,19 @@ int sockfd;
 
 void nizaam(char *IV)
 {
-
-
-
-
-int	len = sizeof(cliaddr);
+	int len = sizeof(cliaddr);
 	
 	FILE* filePointer;
 	int bufferLength = 255;
-	char buffer[bufferLength]; /* not ISO 90 compatible */
-	
-	
-	
-	char onlyIV[7],IVFILE[7];
-	for(int i=0; i<6; i++)
-	     onlyIV[i]=IV[i];
-	onlyIV[6]='\0';
-	
-	
-	
-	
-	
-	
+	char buffer[bufferLength];
 
 	filePointer = fopen("dataset.txt", "r");
 	char en[]="Enough";
 	while(fgets(buffer, bufferLength, filePointer)) 
 	{
 	
-		for(int i=0; i<6; i++)
-	    		IVFILE[i]=buffer[i];
-		IVFILE[6]='\0';
-		
-		if(strcmp(IVFILE, onlyIV)==0)
-	    	{
-		    
+		if(strncmp(buffer,IV,6)==0)
 			sendto(sockfd, (const char *)buffer, strlen(buffer),0, (const struct sockaddr *) &cliaddr,len);
-	    	}
-	    	
-	    IVFILE[0]='\0';
 	}
 	sendto(sockfd, (const char *)en, strlen(en),0, (const struct sockaddr *) &cliaddr,len);
 
@@ -75,10 +49,6 @@ int main() {
 		perror("socket creation failed");
 		exit(EXIT_FAILURE);
 	}
-	
-	//memset(&servaddr, 0, sizeof(servaddr));
-	//memset(&cliaddr, 0, sizeof(cliaddr));
-	
 	// Filling server information
 	servaddr.sin_family = AF_INET; // IPv4
 	servaddr.sin_addr.s_addr = INADDR_ANY;
@@ -103,7 +73,6 @@ int main() {
 	buffer[n] = '\0';
 	if(strcmp(buffer, "EXIT")!=0)
 		nizaam(buffer);
-	
 	}
 	
 			
